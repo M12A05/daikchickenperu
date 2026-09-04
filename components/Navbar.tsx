@@ -55,6 +55,7 @@ export default function Navbar() {
   const navLinks = [
     { href: '/', label: 'Inicio' },
     { href: '/carta', label: 'Nuestra carta' },
+    { href: '/promociones', label: 'Promociones' },
     { href: '/ubicacion', label: 'Ubicación' },
   ];
 
@@ -65,24 +66,24 @@ export default function Navbar() {
         ${isSolid ? 'bg-dais-dark shadow-2xl py-4' : 'bg-transparent py-6 md:py-8'}
       `}>
         {/* Contenedor Izquierdo: Logo */}
-        <div className="flex-1 flex justify-start min-w-0">
-          <Link href="/" className="flex flex-col items-start leading-none relative z-10 text-white flex-shrink-0">
-            <span className="font-serif font-black text-[1.3rem] sm:text-[1.5rem] md:text-[2rem] tracking-widest leading-none">DAIS</span>
-            <span className="font-serif font-black text-[1.3rem] sm:text-[1.5rem] md:text-[2rem] tracking-widest leading-none">CHICKEN</span>
+        <div className="flex justify-start">
+          <Link href="/" className="flex flex-col items-start leading-none relative z-20 text-white flex-shrink-0">
+            <span className="font-serif font-black text-[1.25rem] sm:text-[1.45rem] md:text-[1.75rem] tracking-widest leading-none">DAIS</span>
+            <span className="font-serif font-black text-[1.25rem] sm:text-[1.45rem] md:text-[1.75rem] tracking-widest leading-none">CHICKEN</span>
           </Link>
         </div>
 
-        {/* Contenedor Central: Enlaces de navegación (Desktop) */}
-        <div className="hidden lg:flex flex-none items-center justify-center space-x-12 font-bold text-[1.3rem]">
+        {/* Contenedor Central: Enlaces de navegación centrado (Desktop) */}
+        <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center justify-center space-x-8 xl:space-x-12 font-bold text-[1.05rem] xl:text-[1.15rem] z-30 pointer-events-auto">
           {navLinks.map(link => (
-            <Link key={link.href} href={link.href} className="hover:text-dais-cream transition-colors">
+            <Link key={link.href} href={link.href} className="hover:text-dais-cream transition-colors whitespace-nowrap">
               {link.label}
             </Link>
           ))}
         </div>
 
         {/* Contenedor Derecho: Acciones */}
-        <div className="flex-1 flex justify-end items-center space-x-2 sm:space-x-6 md:space-x-6 relative z-10 min-w-0">
+        <div className="flex justify-end items-center space-x-2 sm:space-x-4 md:space-x-6 relative z-20">
           {/* Botón Hamburguesa (Solo móvil/tablet) */}
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
@@ -96,25 +97,21 @@ export default function Navbar() {
           {/* Carrito de Compras */}
           <button 
             onClick={toggleCart}
-            className="relative p-2.5 hover:bg-white/10 rounded-full transition-colors group"
+            className="relative p-2 hover:bg-white/10 rounded-xl transition-colors group flex items-center gap-2.5 text-white"
             aria-label="Abrir carrito de compras"
           >
-            <ShoppingCart className="w-7 h-7 text-white group-hover:text-dais-cream transition-colors" />
-            {/* Globo contador del carrito */}
-            {cartItemCount > 0 && (
-              <span className="absolute top-0 right-0 bg-dais-red text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-transparent">
-                {cartItemCount}
-              </span>
-            )}
+            <div className="relative">
+              <ShoppingCart className="w-6 h-6 text-white group-hover:text-dais-cream transition-colors" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-dais-red text-white text-[10px] font-black w-4.5 h-4.5 flex items-center justify-center rounded-full border border-dais-dark shadow-sm">
+                  {cartItemCount}
+                </span>
+              )}
+            </div>
+            <span className="hidden sm:inline font-bold text-xs sm:text-xs uppercase tracking-wider group-hover:text-dais-cream transition-colors">
+              VER CARRITO
+            </span>
           </button>
-
-          {/* Botón Principal */}
-          <Link 
-            href="/carta" 
-            className="bg-dais-red hover:bg-red-800 text-white font-bold py-3 px-4 sm:px-6 md:px-8 rounded-lg uppercase tracking-wider text-xs sm:text-sm md:text-base transition-colors shadow-lg whitespace-nowrap"
-          >
-            Haz tu pedido
-          </Link>
         </div>
       </nav>
 
@@ -168,13 +165,16 @@ export default function Navbar() {
 
         {/* Footer del drawer */}
         <div className="p-6 border-t border-white/10">
-          <Link
-            href="/carta"
-            className="w-full bg-dais-red hover:bg-red-800 text-white font-bold py-4 rounded-xl flex items-center justify-center uppercase tracking-wider transition-colors shadow-lg"
-            onClick={() => setIsMobileMenuOpen(false)}
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              toggleCart();
+            }}
+            className="w-full bg-dais-red hover:bg-red-800 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 uppercase tracking-wider transition-colors shadow-lg"
           >
-            Haz tu pedido
-          </Link>
+            <ShoppingCart className="w-5 h-5" />
+            Ver mi Carrito {cartItemCount > 0 && `(${cartItemCount})`}
+          </button>
         </div>
       </aside>
     </>

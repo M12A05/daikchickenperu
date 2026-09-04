@@ -5,7 +5,7 @@ import { WHATSAPP_NUMBER, PHONE_DISPLAY, ADDRESS, SCHEDULE } from '@/lib/siteCon
 
 export default function Footer() {
   return (
-    <footer className="bg-[#111111] text-white pt-12 pb-6 px-6 md:px-12 border-t border-gray-800">
+    <footer className="bg-[#111111] text-white pt-10 pb-5 px-6 md:px-12 border-t border-gray-800">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
         
         {/* Marca y Redes Sociales */}
@@ -43,6 +43,7 @@ export default function Footer() {
           <ul className="space-y-1 text-gray-400">
             <li><Link href="/" className="block py-2 hover:text-dais-red transition-colors">Inicio</Link></li>
             <li><Link href="/carta" className="block py-2 hover:text-dais-red transition-colors">Nuestra carta</Link></li>
+            <li><Link href="/promociones" className="block py-2 hover:text-dais-red transition-colors">Promociones</Link></li>
             <li><Link href="/ubicacion" className="block py-2 hover:text-dais-red transition-colors">Ubicación</Link></li>
           </ul>
         </div>

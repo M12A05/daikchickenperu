@@ -16,19 +16,19 @@ export default function LineaEticaPage() {
   const ethicsUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${ethicsMessage}`;
 
   return (
-    <div className="bg-white pb-20">
-      <div className="bg-white pt-40 pb-8 px-4 text-center relative">
-        <h1 className="text-4xl md:text-6xl font-black text-dais-dark uppercase tracking-tighter relative z-10">
+    <div className="bg-pattern pb-16">
+      <div className="bg-white pt-28 pb-6 px-4 text-center relative">
+        <h1 className="text-3xl md:text-5xl font-black text-dais-dark uppercase tracking-tighter relative z-10">
           Línea Ética
         </h1>
-        <p className="text-dais-red font-black mt-3 text-lg md:text-xl relative z-10 uppercase tracking-widest">
+        <p className="text-dais-red font-black mt-3 text-base md:text-lg relative z-10 uppercase tracking-widest">
           {SITE_NAME}
         </p>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 mt-8 space-y-6 text-gray-700 leading-relaxed">
-        <section className="bg-white rounded-3xl shadow-sm p-8 border border-gray-100">
-          <h2 className="font-black text-2xl uppercase text-dais-dark mb-4">¿Qué es la Línea Ética?</h2>
+      <div className="max-w-3xl mx-auto px-4 mt-6 space-y-6 text-gray-700 leading-relaxed relative z-10">
+        <section className="bg-white rounded-3xl shadow-sm p-6 border border-gray-100">
+          <h2 className="font-black text-xl uppercase text-dais-dark mb-4">¿Qué es la Línea Ética?</h2>
           <p>
             La Línea Ética es un canal de comunicación confidencial de {SITE_NAME} que permite a nuestros
             clientes, colaboradores y proveedores reportar de forma segura cualquier situación que contravenga
@@ -36,8 +36,8 @@ export default function LineaEticaPage() {
           </p>
         </section>
 
-        <section className="bg-white rounded-3xl shadow-sm p-8 border border-gray-100">
-          <h2 className="font-black text-2xl uppercase text-dais-dark mb-4">¿Qué se puede reportar?</h2>
+        <section className="bg-white rounded-3xl shadow-sm p-6 border border-gray-100">
+          <h2 className="font-black text-xl uppercase text-dais-dark mb-4">¿Qué se puede reportar?</h2>
           <ul className="list-disc list-inside space-y-2">
             <li>Conductas deshonestas o fraudulentas.</li>
             <li>Discriminación o acoso.</li>
@@ -46,16 +46,16 @@ export default function LineaEticaPage() {
           </ul>
         </section>
 
-        <section className="bg-white rounded-3xl shadow-sm p-8 border border-gray-100">
-          <h2 className="font-black text-2xl uppercase text-dais-dark mb-4">Confidencialidad</h2>
+        <section className="bg-white rounded-3xl shadow-sm p-6 border border-gray-100">
+          <h2 className="font-black text-xl uppercase text-dais-dark mb-4">Confidencialidad</h2>
           <p>
             Garantizamos la confidencialidad de las denuncias presentadas. Puedes reportar de forma anónima si
             así lo prefieres. Todas las comunicaciones serán atendidas con seriedad y respeto.
           </p>
         </section>
 
-        <section className="bg-white rounded-3xl shadow-sm p-8 border border-gray-100">
-          <h2 className="font-black text-2xl uppercase text-dais-dark mb-4">¿Cómo reportar?</h2>
+        <section className="bg-white rounded-3xl shadow-sm p-6 border border-gray-100">
+          <h2 className="font-black text-xl uppercase text-dais-dark mb-4">¿Cómo reportar?</h2>
           <p className="mb-6">
             Puedes reportar cualquier situación haciendo clic en el botón de abajo, lo que abrirá una conversación
             por WhatsApp con nuestro equipo:

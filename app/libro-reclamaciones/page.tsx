@@ -26,19 +26,19 @@ export default function LibroReclamacionesPage() {
   };
 
   return (
-    <div className="bg-white pb-20">
-      <div className="bg-white pt-40 pb-8 px-4 text-center relative">
-        <h1 className="text-4xl md:text-6xl font-black text-dais-dark uppercase tracking-tighter relative z-10">
+    <div className="bg-pattern pb-16">
+      <div className="bg-white pt-28 pb-6 px-4 text-center relative">
+        <h1 className="text-3xl md:text-5xl font-black text-dais-dark uppercase tracking-tighter relative z-10">
           Libro de Reclamaciones
         </h1>
-        <p className="text-dais-red font-black mt-3 text-lg md:text-xl relative z-10 uppercase tracking-widest">
+        <p className="text-dais-red font-black mt-3 text-base md:text-lg relative z-10 uppercase tracking-widest">
           Dais Chicken
         </p>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 mt-8 space-y-6 text-gray-700 leading-relaxed">
-        <section className="bg-white rounded-3xl shadow-sm p-8 border border-gray-100">
-          <h2 className="font-black text-2xl uppercase text-dais-dark mb-4">Libro de Reclamaciones</h2>
+      <div className="max-w-3xl mx-auto px-4 mt-6 space-y-6 text-gray-700 leading-relaxed relative z-10">
+        <section className="bg-white rounded-3xl shadow-sm p-6 border border-gray-100">
+          <h2 className="font-black text-xl uppercase text-dais-dark mb-4">Libro de Reclamaciones</h2>
           <p className="mb-4">
             De acuerdo con la Ley N° 29571 (Código de Protección y Defensa del Consumidor), ponemos a tu
             disposición el Libro de Reclamaciones para registrar cualquier reclamo o queja sobre nuestros
@@ -50,7 +50,7 @@ export default function LibroReclamacionesPage() {
           </p>
         </section>
 
-        <section className="bg-white rounded-3xl shadow-sm p-8 border border-gray-100">
+        <section className="bg-white rounded-3xl shadow-sm p-6 border border-gray-100">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>

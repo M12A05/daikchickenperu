@@ -18,24 +18,24 @@ export const metadata: Metadata = {
 
 export default function UbicacionPage() {
   return (
-    <div className="bg-white pb-20">
+    <div className="bg-pattern pb-16">
       
       {/* Header Ubicación */}
-      <div className="bg-white pt-40 pb-8 px-4 text-center relative">
-        <h1 className="text-4xl md:text-6xl font-black text-dais-dark uppercase tracking-tighter relative z-10">
+      <div className="bg-white pt-28 pb-6 px-4 text-center relative">
+        <h1 className="text-3xl md:text-5xl font-black text-dais-dark uppercase tracking-tighter relative z-10">
           Encuéntranos
         </h1>
-        <p className="text-dais-red font-black mt-3 text-lg md:text-xl relative z-10 uppercase tracking-widest">
+        <p className="text-dais-red font-black mt-3 text-base md:text-lg relative z-10 uppercase tracking-widest">
           Ven y disfruta del verdadero sabor a la brasa
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 mt-12 flex flex-col md:flex-row gap-8">
+      <div className="max-w-7xl mx-auto px-4 mt-8 flex flex-col md:flex-row gap-8 relative z-10">
         
         {/* Información del Local */}
         <div className="md:w-1/3 space-y-6">
-          <div className="bg-white rounded-3xl shadow-sm p-8 border border-gray-100 relative overflow-hidden">
-            <h3 className="font-black text-2xl uppercase text-dais-dark mb-6 border-b border-gray-100 pb-4 relative z-10">Nuestro Local</h3>
+          <div className="bg-white rounded-3xl shadow-sm p-6 border border-gray-100 relative overflow-hidden">
+            <h3 className="font-black text-xl uppercase text-dais-dark mb-6 border-b border-gray-100 pb-4 relative z-10">Nuestro Local</h3>
             
             <div className="space-y-6 relative z-10">
               <div className="flex items-start">
@@ -80,7 +80,7 @@ export default function UbicacionPage() {
           </div>
           
           {/* Foto del Local (dais.png) */}
-          <div className="bg-dais-dark rounded-3xl h-64 overflow-hidden relative shadow-md border border-gray-100 group">
+          <div className="bg-dais-dark rounded-3xl h-52 overflow-hidden relative shadow-md border border-gray-100 group">
             <Image 
               src="/dais.webp" 
               alt="Fachada del local Dais Chicken" 
