@@ -3,7 +3,6 @@ const required = [
   'NEXT_PUBLIC_SUPABASE_ANON_KEY',
   'NEXT_PUBLIC_SITE_URL',
   'NEXT_PUBLIC_INDEXABLE',
-  'SUPABASE_SERVICE_ROLE_KEY',
 ];
 
 if (process.env.VERCEL_ENV !== 'production' && process.env.REQUIRE_PRODUCTION_CONFIG !== 'true') {
