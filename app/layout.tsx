@@ -3,11 +3,9 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import dynamic from 'next/dynamic'
-import { SITE_NAME, SITE_URL, WHATSAPP_NUMBER, ADDRESS } from '@/lib/siteConfig'
-
-const WhatsAppFab = dynamic(() => import('@/components/WhatsAppFab'), { ssr: false })
-const CartSidebar = dynamic(() => import('@/components/CartSidebar'), { ssr: false })
+import ClientOverlays from '@/components/ClientOverlays'
+import { IS_INDEXABLE, SITE_NAME, SITE_URL, SITE_OG_IMAGE, SITE_DESCRIPTION } from '@/lib/siteConfig'
+import { RESTAURANT_JSON_LD } from '@/lib/restaurantSchema'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,18 +15,19 @@ export const metadata: Metadata = {
     default: `${SITE_NAME} | El Verdadero Sabor`,
     template: `%s | ${SITE_NAME}`,
   },
-  description: 'Sabor que prende, experiencia que te queda. Pide tu pollo a la brasa favorito directo a WhatsApp. Roberto Thorndike Galup 1500, Lima.',
+  description: SITE_DESCRIPTION,
   keywords: ['pollo a la brasa', 'restaurante Lima', 'delivery pollo', 'Dais Chicken', 'parrilla', 'anticuchos', 'Lima Peru'],
   authors: [{ name: SITE_NAME }],
   openGraph: {
     type: 'website',
     locale: 'es_PE',
     siteName: SITE_NAME,
+    url: SITE_URL,
     title: `${SITE_NAME} | El Verdadero Sabor`,
-    description: 'Sabor que prende, experiencia que te queda. Pide tu pollo a la brasa favorito directo a WhatsApp.',
+    description: SITE_DESCRIPTION,
     images: [
       {
-        url: '/dais-og.png',
+        url: SITE_OG_IMAGE,
         width: 1200,
         height: 630,
         alt: 'Dais Chicken - Pollo a la brasa',
@@ -38,15 +37,15 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: `${SITE_NAME} | El Verdadero Sabor`,
-    description: 'Sabor que prende, experiencia que te queda. Pide tu pollo a la brasa favorito directo a WhatsApp.',
-    images: ['/dais-og.png'],
+    description: SITE_DESCRIPTION,
+    images: [SITE_OG_IMAGE],
   },
   robots: {
-    index: true,
-    follow: true,
+    index: IS_INDEXABLE,
+    follow: IS_INDEXABLE,
     googleBot: {
-      index: true,
-      follow: true,
+      index: IS_INDEXABLE,
+      follow: IS_INDEXABLE,
       'max-video-preview': -1,
       'max-image-preview': 'large',
       'max-snippet': -1,
@@ -62,56 +61,27 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Restaurant',
-    name: SITE_NAME,
-    image: '/dais-og.png',
-    url: SITE_URL,
-    telephone: `+${WHATSAPP_NUMBER}`,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Roberto Thorndike Galup 1500',
-      addressLocality: 'Lima',
-      addressRegion: 'Lima',
-      postalCode: '15081',
-      addressCountry: 'PE',
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: -12.08,
-      longitude: -77.04,
-    },
-    openingHoursSpecification: {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      opens: '12:00',
-      closes: '23:00',
-    },
-    servesCuisine: ['Peruvian', 'Pollo a la brasa', 'Parrilla'],
-    priceRange: '$$',
-    menu: `${SITE_URL}/carta`,
-    acceptsReservations: 'true',
-  }
-
   return (
     <html lang="es" className="scroll-smooth">
       <head>
-        <link rel="preconnect" href="https://www.google.com" />
-        <link rel="preconnect" href="https://www.google.com" crossOrigin="anonymous" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+         <script
+           type="application/ld+json"
+           dangerouslySetInnerHTML={{ __html: RESTAURANT_JSON_LD }}
+         />
       </head>
-      <body className={`${inter.className}`}>
-        <Navbar />
-        <main className="min-h-screen min-h-dvh">
-          {children}
-        </main>
+     <body className={`${inter.className}`}>
+        <a
+          href="#main-content"
+          className="fixed left-4 top-4 z-[200] -translate-y-20 rounded-lg bg-dais-red px-4 py-3 font-bold text-white transition-transform focus:translate-y-0"
+        >
+          Saltar al contenido
+        </a>
+         <Navbar />
+         <main id="main-content" className="min-h-screen min-h-dvh">
+           {children}
+         </main>
+         <ClientOverlays />
         <Footer />
-        <WhatsAppFab />
-        <CartSidebar />
       </body>
     </html>
   )

@@ -13,13 +13,13 @@ export default function NotFound() {
       <div className="flex flex-col sm:flex-row gap-4 mt-8">
         <Link
           href="/"
-          className="bg-dais-red hover:bg-red-800 text-white font-bold py-4 px-8 rounded-xl uppercase tracking-wider transition-colors shadow-lg"
+           className="min-h-12 bg-dais-red hover:bg-red-800 text-white font-bold py-4 px-8 rounded-xl uppercase tracking-wider transition-colors shadow-lg"
         >
           Volver al inicio
         </Link>
         <Link
           href="/carta"
-          className="bg-dais-dark hover:bg-black text-white font-bold py-4 px-8 rounded-xl uppercase tracking-wider transition-colors shadow-lg"
+           className="min-h-12 bg-dais-dark hover:bg-black text-white font-bold py-4 px-8 rounded-xl uppercase tracking-wider transition-colors shadow-lg"
         >
           Ver la carta
         </Link>

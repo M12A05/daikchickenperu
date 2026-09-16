@@ -1,94 +1,101 @@
 "use client";
+
 import { ChevronRight, Plus } from 'lucide-react';
 import Link from 'next/link';
-import { useCartStore } from '@/store/cartStore';
 import Image from 'next/image';
+import { useState } from 'react';
+import { useCartStore } from '@/store/cartStore';
+import type { CatalogItem } from '@/lib/catalog';
+import { WHATSAPP_NUMBER } from '@/lib/siteConfig';
 
-// Componente Interno para la tarjeta de producto interactiva
-function ProductCard({ id, title, description, price, image }: { id: number, title: string, description: string, price: number, image: string }) {
-  const addToCart = useCartStore(state => state.addToCart);
-  
+function ProductCard({ product }: { product: CatalogItem }) {
+  const addToCart = useCartStore((state) => state.addToCart);
+  const [feedback, setFeedback] = useState('');
+
   return (
-    <div 
-      className="bg-white rounded-2xl overflow-hidden shadow-lg flex flex-col hover:shadow-xl transition-shadow group border border-gray-100 cursor-pointer"
-      onClick={() => addToCart({ id, name: title, price, image })}
-    >
-      {/* Imagen Real del Producto */}
-      <div className="h-44 md:h-52 w-full bg-gray-100 relative overflow-hidden">
-        <Image 
-          src={image} 
-          alt={title} 
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-lg transition-shadow hover:shadow-xl">
+      <div className="relative h-44 w-full overflow-hidden bg-gray-100 md:h-52">
+        <Image
+          src={product.image}
+          alt={product.name}
           fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform transform-gpu" 
+          sizes="(max-width: 639px) 100vw, (max-width: 767px) 50vw, 33vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
-      
-      {/* Contenido */}
-      <div className="p-5 flex flex-col flex-1 relative text-left">
-        <h3 className="text-lg md:text-xl font-black mb-3 uppercase text-dais-dark tracking-wide">{title}</h3>
-        <p className="text-gray-600 text-sm mb-6 font-medium uppercase leading-relaxed flex-1">
-          {description}
-        </p>
-        <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100">
-          <span className="text-dais-red font-black text-2xl">S/ {price.toFixed(2)}</span>
-          <button className="bg-dais-red hover:bg-red-800 text-white w-12 h-12 rounded-full flex items-center justify-center transition-transform shadow-md group-hover:scale-110 group-hover:rotate-90 duration-300">
-            <Plus className="w-6 h-6 stroke-[3]" />
-          </button>
+      <div className="relative flex flex-1 flex-col p-5 text-left">
+        <h3 className="mb-3 text-lg font-black uppercase tracking-wide text-dais-dark md:text-xl">{product.name}</h3>
+        <p className="mb-6 flex-1 text-sm font-medium uppercase leading-relaxed text-gray-600">{product.description}</p>
+        <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
+          <span className="text-2xl font-black text-dais-red">S/ {product.price.toFixed(2)}</span>
+          <button
+            type="button"
+             onClick={() => {
+               addToCart(product.id);
+               setFeedback(`${product.name} añadido al carrito.`);
+             }}
+            aria-label={`Añadir ${product.name} al carrito`}
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-dais-red text-white shadow-md transition-transform hover:scale-110 hover:bg-red-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dais-red/40"
+          >
+            <Plus className="h-6 w-6 stroke-[3]" aria-hidden="true" />
+           </button>
+           <span className="sr-only" role="status" aria-live="polite">{feedback}</span>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
-export default function MasPedidos() {
+export default function MasPedidos({
+  products: allProducts,
+  catalogError,
+}: {
+  products: CatalogItem[];
+  catalogError: string | null;
+}) {
+  const featuredProducts = allProducts.filter((product) => product.featured);
+  const products = (featuredProducts.length > 0 ? featuredProducts : allProducts).slice(0, 3);
+
+  if (catalogError) {
+    return (
+      <section role="alert" className="bg-transparent px-4 py-14 text-center md:px-12">
+        <h2 className="text-2xl font-black uppercase text-dais-dark">La carta no está disponible temporalmente</h2>
+        <p className="mx-auto mt-3 max-w-xl text-gray-600">Puedes consultar disponibilidad y realizar tu pedido escribiéndonos por WhatsApp.</p>
+        <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex rounded-xl bg-[#075E54] px-6 py-3 font-bold uppercase tracking-wide text-white hover:bg-[#064c44] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#25D366]">
+          Consultar por WhatsApp
+        </a>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section className="bg-transparent px-4 py-14 text-center md:px-12">
+        <h2 className="text-2xl font-black uppercase text-dais-dark">Nuestra carta se está actualizando</h2>
+        <p className="mx-auto mt-3 max-w-xl text-gray-600">Consulta los platos disponibles directamente con nuestro equipo.</p>
+        <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex rounded-xl bg-[#075E54] px-6 py-3 font-bold uppercase tracking-wide text-white hover:bg-[#064c44] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#25D366]">
+          Consultar por WhatsApp
+        </a>
+      </section>
+    );
+  }
+
   return (
-    <section 
-      className="py-14 px-4 md:px-12 relative overflow-hidden bg-cover bg-center"
-      style={{ backgroundImage: "url('/fondodelpolloblanco.webp')" }}
-    >
-      {/* Overlay sutil para garantizar que el texto y tarjetas sigan resaltando */}
-      <div className="absolute inset-0 bg-white/50"></div>
-      
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="flex justify-between items-end mb-4 md:mb-8">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-black uppercase text-dais-dark tracking-tight">
-            Los más pedidos
-          </h2>
-          <Link href="/carta" className="hidden md:flex items-center text-red-600 font-black uppercase tracking-widest text-base hover:text-red-800 transition-colors group py-3">
-            Ver catálogo completo <ChevronRight className="w-6 h-6 ml-1 transform group-hover:translate-x-1 transition-transform" />
+    <section className="relative overflow-hidden bg-transparent px-4 py-14 md:px-12">
+      <div className="absolute inset-0 bg-white/40" aria-hidden="true" />
+      <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="mb-4 flex items-end justify-between md:mb-8">
+          <h2 className="text-xl font-black uppercase tracking-tight text-dais-dark sm:text-2xl md:text-3xl">Los más pedidos</h2>
+          <Link href="/carta" className="hidden items-center py-3 text-base font-black uppercase tracking-widest text-red-600 transition-colors hover:text-red-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dais-red/40 md:flex">
+            Ver catálogo completo <ChevronRight className="ml-1 h-6 w-6" aria-hidden="true" />
           </Link>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-          {/* Tarjetas Verticales */}
-          <ProductCard 
-            id={105}
-            title="1/4 de Pollo"
-            description="1/4 Pollo a la brasa + Papas fritas crujientes + Ensalada clásica + Cremas de la casa."
-            price={20.00}
-            image="/carta menu/pollo.webp"
-          />
-          <ProductCard 
-            id={104}
-            title="1/2 Pollo"
-            description="1/2 Pollo a la brasa + Porción generosa de papas + Ensalada fresca + Cremas de la casa."
-            price={39.00}
-            image="/carta menu/pollo.webp"
-          />
-          <ProductCard 
-            id={101}
-            title="1 Pollo a la Leña"
-            description="1 Pollo entero a la brasa + Porción súper familiar de papas + Ensalada grande + Cremas."
-            price={64.00}
-            image="/carta menu/pollo.webp"
-          />
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-8">
+          {products.map((product) => <ProductCard key={product.id} product={product} />)}
         </div>
-
-        {/* Botón ver catálogo en móvil */}
         <div className="mt-8 text-center md:hidden">
-          <Link href="/carta" className="inline-flex items-center text-red-600 font-black uppercase tracking-widest hover:text-red-800 transition-colors group py-3">
-            Ver catálogo completo <ChevronRight className="w-6 h-6 ml-1 transform group-hover:translate-x-1 transition-transform" />
+          <Link href="/carta" className="inline-flex items-center py-3 text-red-600 font-black uppercase tracking-widest hover:text-red-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dais-red/40">
+            Ver catálogo completo <ChevronRight className="ml-1 h-6 w-6" aria-hidden="true" />
           </Link>
         </div>
       </div>

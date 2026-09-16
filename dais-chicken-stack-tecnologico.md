@@ -4,6 +4,8 @@ Este documento detalla la arquitectura tecnológica elegida para el desarrollo d
 
 La plataforma está diseñada específicamente para optimizar la velocidad de carga, maximizar el SEO y gestionar un flujo de compra cerrado mediante redirección a WhatsApp, todo bajo un estricto marco de seguridad.
 
+> **Estado de seguridad actual:** el frontend aplica headers de seguridad, una CSP con nonce, validación de entradas y un carrito que persiste únicamente IDs y cantidades. El servidor valida los productos y precios antes de preparar un pedido, y registra reclamos en Supabase mediante una API protegida. Los pedidos todavía no se almacenan ni procesan como pagos; esas capacidades requieren una evolución adicional.
+
 ---
 
 ## 1. Frontend (Interfaz y Experiencia de Usuario)
@@ -12,14 +14,14 @@ La capa de presentación está diseñada para ser ultrarrápida, garantizando qu
 
 *   **Framework Principal:** **Next.js (React)**. Permite la generación de sitios estáticos (SSG) y renderizado del lado del servidor (SSR). Esto significa que el catálogo de productos se pre-carga en el servidor, ofreciendo tiempos de respuesta de milisegundos y una indexación perfecta para Google (SEO).
 *   **Estilos y UI:** **Tailwind CSS**. Un framework de utilidades CSS que permite construir componentes visuales consistentes (como tarjetas destacadas, botones de call-to-action y modales) manteniendo el peso del archivo CSS al mínimo.
-*   **Gestión de Estado:** **Zustand** o **React Context API**. Se utilizará para manejar la "bolsa de compras" de manera local en el navegador del usuario, recordando qué productos ha agregado sin necesidad de consultas constantes a la base de datos.
+*   **Gestión de Estado:** **Zustand**. Maneja localmente la bolsa de compras, persistiendo únicamente identificadores y cantidades.
 
 ## 2. Backend y Base de Datos (Gestión de Catálogo)
 
-Aunque el pago no se procesa en la web, se necesita una estructura para que los administradores de Dais Chicken puedan actualizar precios, ocultar productos agotados o lanzar promociones (como el "Mega Banquete Daischicken") sin tocar el código fuente.
+Aunque no existe una pasarela de pagos, se necesita una estructura para que los administradores de Dais Chicken puedan actualizar precios, ocultar productos agotados o lanzar promociones sin tocar el código fuente.
 
-*   **Lógica de Servidor:** **Next.js API Routes (Serverless Functions)**. Pequeñas funciones en el servidor que se ejecutan solo cuando se les llama, eliminando la necesidad de mantener un servidor tradicional encendido 24/7.
-*   **Base de Datos:** **Supabase (PostgreSQL)**. Una alternativa moderna a Firebase que ofrece bases de datos relacionales ultrarrápidas. Aquí se almacenará:
+*   **Lógica de Servidor:** **Next.js App Router** para entregar el catálogo público desde el servidor, validar líneas y precios del pedido, y registrar reclamos. El pedido se confirma manualmente por WhatsApp; no se simula un pago ni se almacena una orden automáticamente.
+*   **Base de Datos:** **Supabase (PostgreSQL)** con migraciones, seed y RLS versionados. Aquí se almacenará:
     *   Tabla de Productos (Nombre, descripción, precio, imagen).
     *   Tabla de Categorías.
     *   Configuraciones generales (Número de WhatsApp actual, horario de atención).
@@ -28,9 +30,9 @@ Aunque el pago no se procesa en la web, se necesita una estructura para que los 
 
 La conversión final se realiza a través de un motor de enlace dinámico, evitando los costos y la fricción de pasarelas de pago automatizadas.
 
-*   **Generador de Pedidos:** Al hacer clic en "Pedir" en el carrito, el sistema consolida el estado del `carrito`, los `datos del cliente` (nombre, dirección) y las `notas adicionales`.
-*   **Codificación URL:** El sistema transforma esta información en un formato legible y seguro utilizando `encodeURIComponent()` en JavaScript, generando un enlace directo a la API de WhatsApp (`https://wa.me/`).
-*   **Ejemplo de Salida:** *"Hola Dais Chicken 🍗, mi pedido es: 1 Mega Banquete Daischicken, 1 Porción de Tequeños. Total: S/ 81.90. Mi dirección es: Av. Brasil 123. Pagaré con Yape."*
+*   **Generador de Pedidos:** Al hacer clic en el carrito, el sistema consolida productos, cantidades y datos que el cliente decide compartir.
+*   **Transferencia a WhatsApp:** El sitio abre `https://wa.me/` sin datos en la URL y copia localmente el mensaje para que el usuario decida pegarlo y enviarlo. Así se evita exponer información personal en query strings.
+*   **Confirmación:** El total mostrado es referencial. Cobertura, delivery, disponibilidad, pago y total final se confirman por WhatsApp.
 
 ## 4. Infraestructura y Despliegue
 
@@ -51,9 +53,11 @@ Para garantizar la integridad de la plataforma, proteger los datos del negocio y
 *   **SSL/TLS Forzado:** Toda la comunicación entre el navegador del cliente y el servidor estará cifrada de extremo a extremo mediante certificados SSL gestionados automáticamente por Vercel y Cloudflare (HTTPS estricto).
 
 ### 5.2 Seguridad a Nivel de Aplicación (Next.js)
-*   **Validación y Sanitización de Inputs:** Aunque los datos se envían a WhatsApp, cualquier formulario interno (por ejemplo, si el cliente ingresa su dirección en la web antes de ser redirigido) será sanitizado utilizando librerías como `Zod` para evitar ataques XSS (Cross-Site Scripting) o inyecciones de código.
-*   **Rate Limiting (Limitación de Tasa):** En las API Routes que consultan el catálogo de Supabase, se configurarán límites de peticiones por IP para evitar que un atacante haga scraping (robo de datos del catálogo) o sobrecargue la base de datos de forma intencional.
-*   **Gestión Segura de Variables de Entorno:** Ninguna credencial de acceso a la base de datos (Supabase Keys) ni el número real de WhatsApp del negocio estará expuesto en el código frontend. Todo residirá de manera segura en el servidor mediante el gestor de secretos (Environment Variables) de Vercel.
+*   **Content Security Policy:** Se genera un nonce por solicitud mediante `proxy.ts`; los scripts inline controlados, incluido JSON-LD, se ejecutan únicamente con ese nonce.
+*   **Validación y Sanitización de Inputs:** Los formularios limitan longitud, eliminan caracteres de control y validan DNI/RUC antes de preparar el mensaje. El mensaje se copia localmente y WhatsApp se abre sin datos en la URL.
+*   **Integridad del carrito:** El navegador persiste únicamente IDs y cantidades. El nombre, precio e imagen se reconstruyen desde el catálogo local y las cantidades están limitadas a 99 unidades.
+*   **Rate Limiting:** El endpoint de reclamos aplica un límite best effort por IP. La validación de pedidos no crea órdenes ni modifica datos; si se incorpora almacenamiento o pagos, deberán añadirse controles distribuidos y antifraude.
+*   **Gestión Segura de Variables de Entorno:** No hay credenciales de backend en el proyecto actual. El número de WhatsApp es un dato público de contacto y no debe tratarse como secreto.
 
-### 5.3 Seguridad de Operaciones (Opcional a Futuro)
-*   **Validación de Número Bot:** En el futuro, se puede integrar una verificación por reCAPTCHA v3 (invisible) en el momento del "Checkout" para asegurar que solo humanos generen la redirección a WhatsApp, evitando spam al teléfono del negocio.
+### 5.3 Seguridad de Operaciones (Pendiente)
+*   **Validación de Número Bot:** Puede integrarse reCAPTCHA o una alternativa equivalente cuando exista un endpoint de checkout en servidor. En el flujo actual no hay endpoint que pueda protegerse contra automatización.

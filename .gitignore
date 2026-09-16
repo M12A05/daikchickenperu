@@ -24,13 +24,20 @@ yarn-error.log*
 
 # local env files
 .env
+.env.*
+!.env.example
 .env*.local
 
 # vercel
 .vercel
 
+# supabase local development
+/supabase/.temp/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
 
 .vercel

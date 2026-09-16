@@ -26,13 +26,13 @@ export default function Error({
       <div className="flex flex-col sm:flex-row gap-4 mt-8">
         <button
           onClick={reset}
-          className="bg-dais-red hover:bg-red-800 text-white font-bold py-4 px-8 rounded-xl uppercase tracking-wider transition-colors shadow-lg"
+           className="min-h-12 bg-dais-red hover:bg-red-800 text-white font-bold py-4 px-8 rounded-xl uppercase tracking-wider transition-colors shadow-lg"
         >
           Reintentar
         </button>
         <Link
           href="/"
-          className="bg-dais-dark hover:bg-black text-white font-bold py-4 px-8 rounded-xl uppercase tracking-wider transition-colors shadow-lg"
+           className="min-h-12 bg-dais-dark hover:bg-black text-white font-bold py-4 px-8 rounded-xl uppercase tracking-wider transition-colors shadow-lg"
         >
           Volver al inicio
         </Link>

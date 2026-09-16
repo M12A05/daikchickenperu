@@ -7,7 +7,7 @@ const bentoItems = [
     id: 1,
     title: "Pollo a la Brasa",
     subtitle: "Nuestra Receta Maestra",
-    image: "/imagenes/pollobrasa.jpeg", 
+    image: "/imagenes/pollobrasa.webp",
     frontTag: "La Estrella",
     backText: "Nuestra sazón se elabora con rigurosos métodos de amasado y macerado por más de 12 horas. Va directo al horno de carbón natural, protegiendo la textura jugosa y logrando una piel extra crujiente inigualable.",
     span: "col-span-1 lg:col-span-2",
@@ -16,7 +16,7 @@ const bentoItems = [
     id: 2,
     title: "Papas Fritas",
     subtitle: "Acompañamientos",
-    image: "/imagenes/papasfritas.jpeg", 
+    image: "/imagenes/papasfritas.webp",
     frontTag: "Crocantes",
     backText: "Seleccionamos minuciosamente las mejores papas peruanas, cortadas a diario y fritas al punto exacto de temperatura para garantizar un crunch irresistible en cada bocado.",
     span: "col-span-1 lg:col-span-1",
@@ -25,64 +25,69 @@ const bentoItems = [
     id: 3,
     title: "Ensalada Clásica",
     subtitle: "Ingredientes del Día",
-    image: "/imagenes/ensalada.jpeg",
+    image: "/imagenes/ensalada.webp",
     frontTag: "Frescura",
     backText: "Verduras seleccionadas cuidadosamente desde el campo directo a tu mesa. Una frescura garantizada que contrasta perfectamente con el intenso sabor de nuestro pollo a la leña.",
     span: "col-span-1 lg:col-span-1",
   },
   {
     id: 4,
+    title: "Cremas",
+    subtitle: "Hechas en casa",
+    image: "/imagenes/cremas-bg.jpg",
+    frontTag: "Caseras",
+    backText: "Nuestras cremas como el ají pollero, salsas, y vinagreta son preparadas en casa con recetas exclusivas, garantizando un sabor casero inigualable. (No incluye ketchup ni mayonesa ni mostaza en sachet).",
+    span: "col-span-1 lg:col-span-1",
+  },
+  {
+    id: 5,
     title: "Bebidas",
     subtitle: "Limonada Frozen y Más",
-    image: "/imagenes/limonadafrozen.jpeg",
+    image: "/imagenes/limonadafrozen.webp",
     frontTag: "Refrescante",
     backText: "El complemento perfecto para acompañar tu pollo a la brasa. Deliciosas opciones como nuestra limonada frozen artesanal, preparada al instante con el punto exacto de frescura y limón.",
-    span: "col-span-1 lg:col-span-2",
+    span: "col-span-1 lg:col-span-1",
   }
 ];
 
 function BentoCard({ item }: { item: typeof bentoItems[number] }) {
   const [flipped, setFlipped] = useState(false);
 
-  const toggleFlip = (e: React.MouseEvent) => {
-    // Evitar que el click en táctil interfiera con el hover del escritorio
-    if (window.matchMedia && window.matchMedia('(hover: hover)').matches) return;
+  const toggleFlip = () => {
     setFlipped(f => !f);
   };
 
+  const panelId = `bento-panel-${item.id}`;
+
   return (
-    <div 
-      className={`group w-full h-full cursor-pointer ${item.span}`}
+    <article
+      className={`${item.span} w-full h-full`}
       style={{ perspective: '1500px' }}
-      onClick={toggleFlip}
-      role="button"
-      tabIndex={0}
-      aria-pressed={flipped}
-      aria-label={`${item.title}: toca para ${flipped ? 'ocultar' : 'ver'} información`}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          setFlipped(f => !f);
-        }
-      }}
     >
-      <div 
-        className={`
-          relative w-full h-full transition-transform duration-[800ms] [transform-style:preserve-3d] shadow-lg rounded-3xl
-          group-hover:[transform:rotateY(180deg)]
-          ${flipped ? '[transform:rotateY(180deg)]' : ''}
-        `}
+      <button
+        type="button"
+        className={`group relative block w-full h-full cursor-pointer border-0 bg-transparent p-0 text-left transition-transform duration-[800ms] [transform-style:preserve-3d] shadow-lg rounded-3xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dais-red/50 ${flipped ? '[transform:rotateY(180deg)]' : ''}`}
+        onClick={toggleFlip}
+        aria-expanded={flipped}
+        aria-controls={panelId}
+        aria-describedby={flipped ? panelId : undefined}
+        aria-label={`${item.title}: ${flipped ? 'ocultar' : 'ver'} información`}
       >
-        {/* Cara Frontal */}
-        <div className="absolute inset-0 w-full h-full rounded-3xl overflow-hidden [backface-visibility:hidden]">
+        <div
+          aria-hidden={flipped}
+          className={`
+            absolute inset-0 w-full h-full rounded-3xl overflow-hidden [backface-visibility:hidden]
+          `}
+        >
           <Image src={item.image} alt={item.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
-          {/* Filtro Oscuro para el Texto */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-          
-          <div className="absolute bottom-6 left-6 right-6">
-            <span className="inline-block bg-dais-cream text-dais-red font-black text-xs px-3 py-1 rounded-full uppercase tracking-widest mb-3 shadow-sm">
-              {item.frontTag}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" aria-hidden="true"></div>
+          <div className="absolute inset-0 flex items-center justify-center bg-black/35 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" aria-hidden="true">
+            <span className="rounded-full bg-dais-red px-5 py-2 text-sm font-black uppercase tracking-widest text-white shadow-lg border border-transparent">
+              Ver Información
             </span>
+          </div>
+
+          <div className="absolute bottom-6 left-6 right-6">
             <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-wide drop-shadow-md leading-tight">
               {item.title}
             </h3>
@@ -92,30 +97,31 @@ function BentoCard({ item }: { item: typeof bentoItems[number] }) {
           </div>
         </div>
 
-        {/* Cara Trasera (Información) */}
-        <div className="absolute inset-0 w-full h-full rounded-3xl overflow-y-auto bg-white text-dais-dark p-5 sm:p-6 md:p-8 flex flex-col justify-center items-center text-center [transform:rotateY(180deg)] [backface-visibility:hidden] border border-gray-100 shadow-2xl custom-scrollbar">
-          <h4 className="text-dais-red font-black text-base md:text-xl mb-2 md:mb-4 uppercase tracking-widest border-b border-dais-red/20 pb-2 md:pb-3">
-            {item.frontTag}
-          </h4>
+        <div
+          id={panelId}
+          aria-hidden={!flipped}
+          className="absolute inset-0 w-full h-full rounded-3xl overflow-y-auto bg-white text-dais-dark p-5 sm:p-6 md:p-8 flex flex-col justify-center items-center text-center [transform:rotateY(180deg)] [backface-visibility:hidden] border border-gray-100 shadow-2xl custom-scrollbar"
+        >
           <p className="text-gray-600 font-medium text-xs sm:text-sm md:text-base leading-relaxed">
             {item.backText}
           </p>
         </div>
-      </div>
-    </div>
+      </button>
+    </article>
   );
 }
 
 export default function BentoCalidad() {
   return (
-    <section className="bg-pattern py-12 px-4 md:px-12">
+    <section className="relative bg-transparent py-12 px-4 md:px-12">
+      <div className="absolute inset-0 bg-white/40" aria-hidden="true" />
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-black text-dais-dark uppercase tracking-tight mb-2">
             El Secreto de Nuestro Sabor
           </h2>
           <p className="text-base md:text-lg text-gray-600 font-medium">
-            Toca o pasa el cursor sobre las tarjetas para descubrir más.
+             Toca o selecciona las tarjetas para descubrir más.
           </p>
         </div>
 

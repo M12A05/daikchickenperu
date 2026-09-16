@@ -42,6 +42,10 @@ const config: Config = {
         zoomInOut: {
           '0%, 100%': { transform: 'scale(1)' },
           '50%': { transform: 'scale(1.1)' },
+        },
+        zoomInSlow: {
+          '0%': { transform: 'scale(1)' },
+          '100%': { transform: 'scale(1.05)' },
         }
       },
       animation: {
@@ -50,6 +54,7 @@ const config: Config = {
         'tada': 'tada 1s ease-in-out forwards',
         'bounce-double': 'bounceDouble 1s ease-in-out forwards',
         'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+        'zoom-in-slow': 'zoomInSlow 6s linear forwards',
       }
     },
   },
